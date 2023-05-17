@@ -1,0 +1,129 @@
+// testing
+private function testKeyboard($botUserId)
+{
+    $text = 'Welcome to our bot';
+    $replyMarkUp = json_encode([
+        'keyboard' => [
+            [
+                ['text' => 'Hi Bot'],
+                ['text' => 'About Us']
+            ]
+        ],
+        'resize_keyboard' => true,
+        'one_time_keyboard' => true
+    ]);
+
+    $response = Http::post('https://api.telegram.org/bot5401059461:AAHSf7m-JW_SoGDcB3gNocXmAOd2UhVhD6A/sendMessage', [
+        'chat_id' => $botUserId,
+        'text' => $text,
+        'reply_markup' => $replyMarkUp
+    ]);
+
+    Log::info($response);
+}
+
+private function testKeyboard2($botUserId)
+{
+    $text = 'Yes';
+    $replyMarkUp = json_encode([
+        'remove_keyboard' => true
+    ]);
+
+    $response = Http::post('https://api.telegram.org/bot5401059461:AAHSf7m-JW_SoGDcB3gNocXmAOd2UhVhD6A/sendMessage', [
+        'chat_id' => $botUserId,
+        'text' => $text,
+        'reply_markup' => $replyMarkUp
+    ]);
+
+    Log::info($response);
+}
+
+
+
+// blocking bot
+{
+	"update_id": 96843170,
+	"my_chat_member":
+	{
+		"chat":
+		{
+			"id": 1019222507,
+			"first_name": "Anthony",
+			"last_name": "Wayne",
+			"username": "aungnaioo24",
+			"type": "private"
+		},
+		"from":
+		{
+			"id": 1019222507,
+			"is_bot": false,
+			"first_name": "Anthony",
+			"last_name": "Wayne",
+			"username": "aungnaioo24",
+			"language_code": "en"
+		},
+		"date": 1656218839,
+		"old_chat_member":
+		{
+			"user":
+			{
+				"id": 5401059461,
+				"is_bot": true,
+				"first_name": "Aung Nai Oo",
+				"username": "aung_nai_oo_bot"
+			},
+			"status": "member"
+		},
+		"new_chat_member":
+		{
+			"user":
+			{
+				"id": 5401059461,
+				"is_bot": true,
+				"first_name": "Aung Nai Oo",
+				"username": "aung_nai_oo_bot"
+			},
+			"status": "kicked",
+			"until_date": 0
+		}
+	}
+}
+
+// flow sample for Aung Nai Oo Bot
+{
+    "data": {
+
+        "/start": {
+            "text": "Welcome to Aung Nai Oo Bot",
+            "reply_markup": {
+                "keyboard": [
+                    [
+                        {"text": "Your Accounts"}, {"text": "About You"}
+                    ]
+                ],
+                "resize_keyboard": true,
+                "one_time_keyboard": true
+            }
+        },
+
+
+        "Your Accounts": {
+            "text": "My Accounts",
+            "reply_markup": {
+                "inline_keyboard": [
+                    [
+                        {"text": "LinkedIn", "url": "https://www.linkedin.com/in/aungnaioo24"}, {"text": "GitHub", "url": "https://github.com/aungnaioo24"}, {"text": "Facebook", "url": "https://www.facebook.com/aungnaioo24"}
+                    ]
+                ],
+                "resize_keyboard": true,
+                "one_time_keyboard": true
+            }
+        },
+
+
+        "About You": {
+            "text": "I'm a full stack developer and a content creator."
+        }
+
+    }
+}

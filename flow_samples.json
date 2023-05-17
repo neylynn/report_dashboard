@@ -1,0 +1,20 @@
+{
+    "data": {
+
+        "/start": {
+            "text": "Welcome to Aung Nai Oo Bot",
+            "reply_markup": {
+                "inline_keyboard": [
+                    [
+                        {"text": "LinkedIn", "url": "https://www.linkedin.com/in/aungnaioo24"}, {"text": "GitHub", "url": "https://github.com/aungnaioo24"}, {"text": "Facebook", "url": "https://www.facebook.com/aungnaioo24"}
+                    ],
+                    [
+                        {"text": "Address", "callback_data": "address-ano"}, {"text": "Channel", "callback_data": "channel-ano"}
+                    ]
+                ],
+                "resize_keyboard": true,
+                "one_time_keyboard": true
+            }
+        }
+    }
+}
