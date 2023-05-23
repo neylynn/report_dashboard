@@ -13,6 +13,7 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
+        "realrashid/sweet-alert": "^7.0",
         "yajra/laravel-datatables-oracle": "^10.1"
     },
     "require-dev": {

@@ -49,6 +49,7 @@ Route::middleware([
     'superAdminRoleChecker'
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/dashboard/download', [DashboardController::class, 'download'])->name('dashboard.download');
     Route::get('/user-setting', [UserSettingController::class, 'index'])->name('userSetting');
     Route::get('/admins-get', [UserSettingController::class, 'getAdminUsers'])->name('getadmins');
 });
