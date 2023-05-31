@@ -74,38 +74,80 @@ class DashboardController extends Controller
                     $start_date = $request->input('start_date');
                     $end_date = $request->input('end_date');
 
+                    $company_array = [];
+                    $company_list_command = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL company_list()"';
+                    $company_result = $ssh->exec($company_list_command);
                     
-                    $final_array = [52,64,72];
-                    $result_array = [];
-                    $array_length = count($final_array);
-                    // Log::debug($final_array[0]);
-                    for ($i = 0; $i < $array_length; $i++){
-                        $get_data = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL viber_report(\''.$start_date.'\', \''.$end_date.'\',\''.$final_array[$i].'\')"';
-                        $datas = $ssh->exec($get_data);
-                        // Log::debug($datas. 'Row =>'. $company_id);
+                    // dd($company_array);
+                    // Log::debug($company_result);
+                    $cleanedList = str_replace("id_list", "", trim($company_result));
+                    // Log::debug($cleanedList);
 
-                        $array = explode("\t", $datas);
-                        $string = $array[3];
-                        $parenthesisPosition = strpos($string, ')');
-                        $trimmedString = trim(substr($string, $parenthesisPosition + 1));
-                        $data = [
-                            [
-                                $trimmedString,
-                                $array[4],
-                                $array[5],
-                                $array[6]
-                            ]
-                        ];
-                        array_push($result_array, $data);
+                    // $string = str_replace("GROUP_CONCAT(DISTINCT id ORDER BY id ASC SEPARATOR ',')", "", $company_result);
+                    // $final_string = $string;
+                    $array = explode(",", $cleanedList);
+                    $cleanedArray = array_map('trim', $array);
+
+                    // Log::debug($cleanedArray);
+                    // $convertedArray = array_map('intval', $cleanedArray);
+
+                    // Log::debug($convertedArray);
+                    // $string = $array[0];
+                    // $parenthesisPosition = strpos($string, 'd');
+                    // $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                    // $company_string = explode(",", $trimmedString);
+                    // Log::debug($company_string);
+                    // $final_array = implode(",", $company_string);
+                    // Log::debug($final_array);
+                    // $string = explode("ID", $company_result);
+                    // $cleanString = str_replace("ID", "", $company_result);
+                    // Log::debug($cleanString);
+
+                    // array_push($company_array, $new_array);
+                    
+                    // array_push($company_array, $new_array[1]);
+                    // Log::debug($company_array);
+                    // $company_string = implode(",", $new_array);
+                    // Log::debug($company_string);
+                    // $final_array = explode(",", $cleanString);
+                    // Log::debug($final_array);
+                    // $filteredArray = array_filter($final_array);
+                    // $final_company_array = array_map('intval', $filteredArray);
+                    // Log::debug($final_company_array);
+                    // $convertedArray = [39,46,52,54,64,70,72,90];
+                    $convertedArray = [39,52,64,72];
+                    Log::debug($convertedArray);
+                    $result_array = [];
+                    // $array_length = count($final_array);
+                    for ($i = 0; $i < count($convertedArray); $i++){
+                        Log::debug($convertedArray[$i]);
+                        $get_data = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL viber_report(\''.$start_date.'\', \''.$end_date.'\',\''.$convertedArray[$i].'\')"';
+                        $datas = $ssh->exec($get_data);
+                        Log::debug($datas. 'Row =>'. $convertedArray[$i]);
+
+                        // $array = explode("\t", $datas);
+                        // Log::debug($array);
+                        // $string = $array[3];
+                        // $parenthesisPosition = strpos($string, ')');
+                        // $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                        // $data = [
+                        //     [
+                        //         $trimmedString,
+                        //         $array[4],
+                        //         $array[5],
+                        //         $array[6]
+                        //     ]
+                        // ];
+                        // array_push($result_array, $data);
                     }
-                    return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'procedure_data.xlsx');
-                    $result = json_decode(json_encode($result_array), true);
-                    return Excel::create('viber_report', function($excel) use ($result) {
-                        $excel->sheet('mySheet', function($sheet) use ($result)
-                        {
-                            $sheet->fromArray($result);
-                        });
-                    })->download('xlsx');
+                    // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'procedure_data.xlsx');
+                    // $result = json_decode(json_encode($result_array), true);
+                    // return Excel::create('viber_report', function($excel) use ($result) {
+                    //     $excel->sheet('mySheet', function($sheet) use ($result)
+                    //     {
+                    //         $sheet->fromArray($result);
+                    //     });
+                    // })->download('xlsx');
                     
                     break;
                 case 'uu':
