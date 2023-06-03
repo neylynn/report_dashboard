@@ -32,51 +32,66 @@ class DashboardController extends Controller
                 $username = config('ssh.username');
                 $privateKeyPath = config('ssh.pem_key');
                 $mysql_username = config('ssh.portal_one_username');
-                $privateKey = PublicKeyLoader::load($privateKeyPath);
+                // $privateKey = PublicKeyLoader::load($privateKeyPath);
 
-                $ssh = new SSH2($host);
-                if (!$ssh->login($username, $privateKey)) {
-                    exit('Login Failed');
-                }
+                // $ssh = new SSH2($host);
+                // if (!$ssh->login($username, $privateKey)) {
+                //     exit('Login Failed');
+                // }
                 // Log::debug($ssh->exec('uptime'));
                 $start_date = $request->input('start_date');
                 $end_date = $request->input('end_date');
 
-                $company_list_command = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL company_list()"';
-                $company_result = $ssh->exec($company_list_command);
 
-                $cleanedList = str_replace("id_list", "", trim($company_result));
-                $array = explode(",", $cleanedList);
-                $cleaned_array = array_map('trim', $array);
-                $company_array = array_map('intval', $cleaned_array);
+                $results = \DB::connection('mysql_portal_one')->select('CALL company_list()');
+
+                // Log::debug($results);
+
+                $result_string = json_encode($results[0]->id_list);
+                Log::debug($result_string);
+                $filter_string = str_replace('"', '', $result_string);
+                Log::debug($filter_string);
+                $company_array = explode(',', $filter_string);
+                // $company_array = array_map('intval', $result_array);
+                // Log::debug($company_array);
+
+                // $company_list_command = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL company_list()"';
+                // $company_result = $ssh->exec($company_list_command);
+
+                // $cleanedList = str_replace("id_list", "", trim($company_result));
+                // $array = explode(",", $cleanedList);
+                // $cleaned_array = array_map('trim', $array);
+                // $company_array = array_map('intval', $cleaned_array);
                 $result_array = [];
 
                 for ($i = 0; $i < count($company_array); $i++){
-                    $get_data = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL viber_report(\''.$start_date.'\', \''.$end_date.'\',\''.$company_array[$i].'\')"';
-                    $datas = $ssh->exec($get_data);
-                    // Log::debug($datas. 'Row =>'. $company_array[$i]);
-                    $array = explode("\t", $datas);
-                    $string = $array[3];
-                    $parenthesisPosition = strpos($string, ')');
-                    $trimmedString = trim(substr($string, $parenthesisPosition + 1));
-                    $data = [
-                        [
-                            $trimmedString,
-                            $array[4],
-                            $array[5],
-                            $array[6]
-                        ]
-                    ];
-                    array_push($result_array, $data);
+                    // $get_data = 'MYSQL_PWD=3pY9n5J1emGqBFKgLtwv mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL viber_report(\''.$start_date.'\', \''.$end_date.'\',\''.$company_array[$i].'\')"';
+                    // $datas = $ssh->exec($get_data);
+
+                    $datas = \DB::connection('mysql_portal_one')->select('CALL viber_report(?, ?, ?)', [$start_date, $end_date, $company_array[$i]]);
+                    Log::debug(json_encode($datas));
+                    // $array = explode("\t", $datas);
+                    // $string = $array[3];
+                    // $parenthesisPosition = strpos($string, ')');
+                    // $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                    // $data = [
+                    //     [
+                    //         $trimmedString,
+                    //         $array[4],
+                    //         $array[5],
+                    //         $array[6]
+                    //     ]
+                    // ];
+                    // array_push($result_array, $data);
                 }
-                return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report('.$start_date.'_'.$end_date.').xlsx');
-                $result = json_decode(json_encode($result_array), true);
-                return Excel::create('viber_report', function($excel) use ($result) {
-                    $excel->sheet('mySheet', function($sheet) use ($result)
-                    {
-                        $sheet->fromArray($result);
-                    });
-                })->download('xlsx');
+                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report('.$start_date.'_'.$end_date.').xlsx');
+                // $result = json_decode(json_encode($result_array), true);
+                // return Excel::create('viber_report', function($excel) use ($result) {
+                //     $excel->sheet('mySheet', function($sheet) use ($result)
+                //     {
+                //         $sheet->fromArray($result);
+                //     });
+                // })->download('xlsx');
             break;
             case 'portal_two':
                 $db = \DB::connection('mysql_portal_two');
