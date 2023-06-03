@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'pem_key' => env('PEM_KEY'),
+    'pem_key' => env('PEM_KEY_NAY'),
     'username' => env('SSH_USERNAME'),
     'portal_one_username' => env('DB_PORTAL_ONE_USERNAME'),
     'portal_one_host' => env('DB_PORTAL_ONE_HOST'),
