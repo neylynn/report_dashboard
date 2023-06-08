@@ -71,7 +71,6 @@ class DashboardController extends Controller
                 $db = \DB::connection('mysql_portal_two');
                 $database = $db->getDatabaseName();
                 $host = config('ssh.portal_two_host');
-                $portal_two_host = '127.0.0.1';
                 $username = config('ssh.username');
                 $privateKeyPath = config('ssh.pem_key');
                 $mysql_username = config('ssh.portal_two_username');
@@ -94,32 +93,31 @@ class DashboardController extends Controller
                 $result_array = [];
                 for ($i = 0; $i < count($company_array); $i++){
                     $get_data = 'MYSQL_PWD="BpbS8Tc38.s/-p>E+" mysql -u '. $mysql_username . ' -e "USE '.$database.'; CALL viber_report(\''.$start_date.'\', \''.$end_date.'\',\''.$company_array[$i].'\')"';
-                    Log::debug($get_data);
                     $datas = $ssh->exec($get_data);
                     // Log::debug($datas. 'Row =>'. $company_array[$i]);
                     $array = explode("\t", $datas);
-                    Log::debug($array);
-                    // $string = $array[3];
-                    // $parenthesisPosition = strpos($string, ')');
-                    // $trimmedString = trim(substr($string, $parenthesisPosition + 1));
-                    // $data = [
-                    //     [
-                    //         $trimmedString,
-                    //         $array[4],
-                    //         $array[5],
-                    //         $array[6]
-                    //     ]
-                    // ];
-                    // array_push($result_array, $data);
+                    // Log::debug($array);
+                    $string = $array[3];
+                    $parenthesisPosition = strpos($string, ')');
+                    $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                    $data = [
+                        [
+                            $trimmedString,
+                            $array[4],
+                            $array[5],
+                            $array[6]
+                        ]
+                    ];
+                    array_push($result_array, $data);
                 }
-                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report('.$start_date.'_'.$end_date.').xlsx');
-                // $result = json_decode(json_encode($result_array), true);
-                // return Excel::create('viber_report', function($excel) use ($result) {
-                //     $excel->sheet('mySheet', function($sheet) use ($result)
-                //     {
-                //         $sheet->fromArray($result);
-                //     });
-                // })->download('xlsx');
+                return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report('.$start_date.'_'.$end_date.').xlsx');
+                $result = json_decode(json_encode($result_array), true);
+                return Excel::create('viber_report', function($excel) use ($result) {
+                    $excel->sheet('mySheet', function($sheet) use ($result)
+                    {
+                        $sheet->fromArray($result);
+                    });
+                })->download('xlsx');
             break;
             case 'roche':
                 $start_date = $request->input('start_date');
