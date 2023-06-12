@@ -78,13 +78,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            // 'options' => extension_loaded('pdo_mysql') ? array_filter([
-            //     PDO::MYSQL_ATTR_SSL_CA => 'DISABLED',
-            // ]) : [],
-            'options' => [
-                PDO::MYSQL_ATTR_SSL_CA => false,
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ],
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => 'DISABLED',
+            ]) : [],
+            // 'options' => [
+            //     PDO::MYSQL_ATTR_SSL_CA => false,
+            //     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            // ],
         ],
 
         'mysql_portal_two' => [
@@ -102,10 +102,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => [
-                PDO::MYSQL_ATTR_SSL_CA => false,
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ],
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => 'DISABLED',
+            ]) : [],
+            // 'options' => [
+            //     PDO::MYSQL_ATTR_SSL_CA => false,
+            //     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            // ],
         ],
 
         'mysql_roche' => [
@@ -123,10 +126,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => [
-                PDO::MYSQL_ATTR_SSL_CA => false,
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ],
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => 'DISABLED',
+            ]) : [],
+            // 'options' => [
+            //     PDO::MYSQL_ATTR_SSL_CA => false,
+            //     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            // ],
         ],
 
         'mysql_yoma' => [
@@ -144,10 +150,13 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => [
-                PDO::MYSQL_ATTR_SSL_CA => false,
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
-            ],
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => 'DISABLED',
+            ]) : [],
+            // 'options' => [
+            //     PDO::MYSQL_ATTR_SSL_CA => false,
+            //     PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
+            // ],
         ],
 
         'pgsql' => [
