@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "ext-gd": "*",
+        "ext-sodium": "*",
         "guzzlehttp/guzzle": "^7.4",
         "laravel/framework": "^9.11",
         "laravel/jetstream": "^2.8",
