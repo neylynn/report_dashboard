@@ -17,6 +17,7 @@
         "livewire/livewire": "^2.5",
         "maatwebsite/excel": "^3.1",
         "phpseclib/phpseclib": "^3.0",
+        "predis/predis": "^2.1",
         "psr/simple-cache": "^2.0",
         "rap2hpoutre/fast-excel": "*",
         "yajra/laravel-datatables-oracle": "^10.1"
