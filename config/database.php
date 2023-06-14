@@ -67,7 +67,7 @@ return [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_PORTAL_ONE_HOST'),
-            'port' => env('DB_PORTAL_ONE_HOST', '3306'),
+            'port' => env('DB_PORT', '3306'),
             'database' => env('DB_PORTAL_ONE_DATABASE'),
             'username' => env('DB_PORTAL_ONE_USERNAME'),
             'password' => env('DB_PORTAL_ONE_PASSWORD'),
