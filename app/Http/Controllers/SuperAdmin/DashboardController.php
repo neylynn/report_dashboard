@@ -30,7 +30,7 @@ class DashboardController extends Controller
                 $start_date = $request->input('start_date');
                 $end_date = $request->input('end_date');
                 $company_array = [];
-                $db = \DB::connection('mysql_portal_two');
+                $db = \DB::connection('mysql_portal_one');
                 $database = $db->getDatabaseName();
                 Log::debug($database);
 
