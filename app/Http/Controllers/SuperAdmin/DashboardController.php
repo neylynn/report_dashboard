@@ -34,42 +34,42 @@ class DashboardController extends Controller
                 $database = $db->getDatabaseName();
                 Log::debug($database);
 
-                // $arrayOfObjects = \DB::connection('mysql_portal_one')->select('CALL company_list()');
-                // $mergedObject = new stdClass();
-                // foreach ($arrayOfObjects as $object) {
-                //     $mergedObject = (object) array_merge((array) $mergedObject, (array) $object);
-                //     $company_id = $mergedObject->id;
-                //     array_push($company_array, $company_id);
-                // }
-                // $result_array = [];
-                // for ($i = 0; $i < count($company_array); $i++){
-                //     $arrayOfObjects = \DB::connection('mysql_portal_one')->select('CALL viber_report(?, ?, ?)', [$start_date, $end_date, $company_array[$i]]);
-                //     $mergedObject = new stdClass();
-                //     foreach ($arrayOfObjects as $object) {
-                //         $mergedObject = (object) array_merge((array) $mergedObject, (array) $object);
-                //     }
-                //     $company_name = $mergedObject->name;
-                //     $delivered = $mergedObject->Delivered;
-                //     $seen = $mergedObject->Seen;
-                //     $error = $mergedObject->Error;
-                //     $data = [
-                //         [
-                //             $company_name,
-                //             $delivered,
-                //             $seen,
-                //             $error
-                //         ]
-                //     ];
-                //     array_push($result_array, $data);
+                $arrayOfObjects = \DB::connection('mysql_portal_one')->select('CALL company_list()');
+                $mergedObject = new stdClass();
+                foreach ($arrayOfObjects as $object) {
+                    $mergedObject = (object) array_merge((array) $mergedObject, (array) $object);
+                    $company_id = $mergedObject->id;
+                    array_push($company_array, $company_id);
                 }
-                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report('.$start_date.'_'.$end_date.').xlsx');
-                // $result = json_decode(json_encode($result_array), true);
-                // return Excel::create('viber_report', function($excel) use ($result) {
-                //     $excel->sheet('mySheet', function($sheet) use ($result)
-                //     {
-                //         $sheet->fromArray($result);
-                //     });
-                // })->download('xlsx');
+                $result_array = [];
+                for ($i = 0; $i < count($company_array); $i++){
+                    $arrayOfObjects = \DB::connection('mysql_portal_one')->select('CALL viber_report(?, ?, ?)', [$start_date, $end_date, $company_array[$i]]);
+                    $mergedObject = new stdClass();
+                    foreach ($arrayOfObjects as $object) {
+                        $mergedObject = (object) array_merge((array) $mergedObject, (array) $object);
+                    }
+                    $company_name = $mergedObject->name;
+                    $delivered = $mergedObject->Delivered;
+                    $seen = $mergedObject->Seen;
+                    $error = $mergedObject->Error;
+                    $data = [
+                        [
+                            $company_name,
+                            $delivered,
+                            $seen,
+                            $error
+                        ]
+                    ];
+                    array_push($result_array, $data);
+                }
+                return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report('.$start_date.'_'.$end_date.').xlsx');
+                $result = json_decode(json_encode($result_array), true);
+                return Excel::create('viber_report', function($excel) use ($result) {
+                    $excel->sheet('mySheet', function($sheet) use ($result)
+                    {
+                        $sheet->fromArray($result);
+                    });
+                })->download('xlsx');
             break;
             case 'portal_two':
                 $db = \DB::connection('mysql_portal_two');
