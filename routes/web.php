@@ -27,4 +27,6 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/download', [DashboardController::class, 'download'])->name('dashboard.download');
+    Route::get('/test-database-connection', [DashboardController::class, 'testConnection']);
+
 });
