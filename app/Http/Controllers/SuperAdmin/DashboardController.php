@@ -222,10 +222,10 @@ class DashboardController extends Controller
 
                 // // Retrieve company IDs using company_list procedure
                 // try {
-                //     $host = env('DB_PORTAL_ONE_HOST');
-                //     $database = env('DB_PORTAL_ONE_DATABASE');
-                //     $username = env('DB_PORTAL_ONE_USERNAME');
-                //     $password = env('DB_PORTAL_ONE_PASSWORD');
+                //     $host = env('DB_PORTAL_TWO_HOST');
+                //     $database = env('DB_PORTAL_TWO_DATABASE');
+                //     $username = env('DB_PORTAL_TWO_USERNAME');
+                //     $password = env('DB_PORTAL_TWO_PASSWORD');
 
                 //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
 
@@ -278,7 +278,7 @@ class DashboardController extends Controller
 
                 // Log::debug(json_decode(json_encode($result_array), true));
 
-                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
+                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
 
 
                 break;
