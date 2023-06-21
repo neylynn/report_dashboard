@@ -30,6 +30,7 @@ class DashboardController extends Controller
         if ($request->input('start_date') == '' && $request->input('start_date') == '') {
             return redirect()->route('dashboard')->with('message', 'Please choose date range!');
         }
+        Log::debug("Test");
         switch ($request->input('viber_portal')) {
             case 'portal_one':
 
