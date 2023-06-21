@@ -230,7 +230,7 @@ class DashboardController extends Controller
                     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
 
                     // Execute the company_list procedure
-                    $stmt = $pdo->prepare('CALL company_list()');
+                    $stmt = $pdo->prepare('CALL company_id()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
