@@ -442,7 +442,7 @@ class DashboardController extends Controller
                     }
 
                     Log::debug(json_decode(json_encode($result_array), true));
-                    
+
                     return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'yoma_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
                 } catch (PDOException $e) {
                     // Log or handle the database connection error
@@ -459,27 +459,49 @@ class DashboardController extends Controller
 
     public function testConnection()
     {
-        $host = env('DB_PORTAL_TWO_HOST');
-        $database = env('DB_PORTAL_TWO_DATABASE');
-        $username = env('DB_PORTAL_TWO_USERNAME');
-        $password = env('DB_PORTAL_TWO_PASSWORD');
+        // $host = env('DB_PORTAL_TWO_HOST');
+        // $database = env('DB_PORTAL_TWO_DATABASE');
+        // $username = env('DB_PORTAL_TWO_USERNAME');
+        // $password = env('DB_PORTAL_TWO_PASSWORD');
+
+        // try {
+        //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
+
+        //     // Execute the company_list procedure
+        //     $stmt = $pdo->prepare('CALL company_list()');
+        //     $stmt->execute();
+        //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //     dd($result);
+
+        //     if (count($result) > 0) {
+        //         return 'Company list retrieved successfully!';
+        //     } else {
+        //         return 'No companies found.';
+        //     }
+        // } catch (PDOException $e) {
+        //     return 'Failed to connect to the database: ' . $e->getMessage();
+        // }
+
 
         try {
+            $host = env('DB_PORTAL_ONE_HOST');
+            $database = env('DB_PORTAL_ONE_DATABASE');
+            $username = env('DB_PORTAL_ONE_USERNAME');
+            $password = env('DB_PORTAL_ONE_PASSWORD');
+        
             $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
-
-            // Execute the company_list procedure
-            $stmt = $pdo->prepare('CALL company_list()');
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            dd($result);
-
-            if (count($result) > 0) {
-                return 'Company list retrieved successfully!';
-            } else {
-                return 'No companies found.';
-            }
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+            // Test the connection by executing a simple query
+            $stmt = $pdo->query('SELECT 1');
+            $stmt->fetch();
+        
+            echo "Database connection is established.";
         } catch (PDOException $e) {
-            return 'Failed to connect to the database: ' . $e->getMessage();
+            // Log or handle the database connection error
+            Log::error('Database Connection Error: ' . $e->getMessage());
+            // Return an error response to the user
+            return response()->json(['error' => 'Failed to connect to the database'], 500);
         }
     }
 }
