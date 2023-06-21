@@ -485,10 +485,10 @@ class DashboardController extends Controller
 
 
         try {
-            $host = env('DB_PORTAL_ONE_HOST');
-            $database = env('DB_PORTAL_ONE_DATABASE');
-            $username = env('DB_PORTAL_ONE_USERNAME');
-            $password = env('DB_PORTAL_ONE_PASSWORD');
+            $host = env('DB_PORTAL_TWO_HOST');
+            $database = env('DB_PORTAL_TWO_DATABASE');
+            $username = env('DB_PORTAL_TWO_USERNAME');
+            $password = env('DB_PORTAL_TWO_PASSWORD');
         
             $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
