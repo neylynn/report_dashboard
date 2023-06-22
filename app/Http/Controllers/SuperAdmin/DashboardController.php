@@ -274,7 +274,7 @@ class DashboardController extends Controller
                             // You can also include additional information in the log message if needed
 
                             // Or you can throw an exception
-                            // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
+                            throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
                         }
                     } catch (Exception $e) {
                         // Log or handle the exception
