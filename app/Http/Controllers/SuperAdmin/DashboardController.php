@@ -230,7 +230,7 @@ class DashboardController extends Controller
                     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
 
                     // Execute the company_list procedure
-                    $stmt = $pdo->prepare('CALL company_list()');
+                    $stmt = $pdo->prepare('CALL company_id()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -248,7 +248,7 @@ class DashboardController extends Controller
                 $result_array = [];
                 foreach ($company_array as $companyId) {
                     try {
-                        $get_data = 'MYSQL_PWD="BpbS8Tc38.s/-p>E+" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
+                        $get_data = 'MYSQL_PWD="Jaoyai|p3ue{zeek" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
                         $datas = exec($get_data);
                         Log::debug('Received data: ' . $datas); // Log the received data
 
