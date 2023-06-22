@@ -233,7 +233,6 @@ class DashboardController extends Controller
                     $stmt = $pdo->prepare('CALL company_list()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    // dd($result);
 
                     foreach ($result as $row) {
                         $company_id = $row['id_list'];
@@ -245,52 +244,17 @@ class DashboardController extends Controller
                     // Return an error response to the user
                     return response()->json(['error' => 'Failed to connect to the database'], 500);
                 }
-                // dd($company_array);
 
                 $result_array = [];
-                // foreach ($company_array as $companyId) {
-                //     try {
-                //         $stmt = $pdo->prepare('CALL viber_report(?, ?, ?)');
-                //         $stmt->bindParam(1, $start_date, PDO::PARAM_STR);
-                //         $stmt->bindParam(2, $end_date, PDO::PARAM_STR);
-                //         $stmt->bindParam(3, $companyId, PDO::PARAM_INT);
-                //         $stmt->execute();
-                //         $arrayOfObjects = $stmt->fetchAll(PDO::FETCH_OBJ);
-
-                //         foreach ($arrayOfObjects as $object) {
-                //             $company_name = $object->name;
-                //             $delivered = $object->Delivered;
-                //             $seen = $object->Seen;
-                //             $error = $object->Error;
-                //             $data = [
-                //                 $company_name,
-                //                 $delivered,
-                //                 $seen,
-                //                 $error
-                //             ];
-                //             array_push($result_array, $data);
-                //         }
-                //     } catch (PDOException $e) {
-                //         // Log or handle the database connection error
-                //         Log::error('Database Connection Error: ' . $e->getMessage());
-                //         // Return an error response to the user
-                //         return response()->json(['error' => 'Failed to connect to the database'], 500);
-                //     }
-                // }
-
-                // Log::debug(json_decode(json_encode($result_array), true));
-
-                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
-
                 foreach ($company_array as $companyId) {
                     try {
-                        $get_data = 'MYSQL_PWD="Jaoyai|p3ue{zeek" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
+                        $get_data = 'MYSQL_PWD="BpbS8Tc38.s/-p>E+" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
                         $datas = exec($get_data);
                         Log::debug('Received data: ' . $datas); // Log the received data
-                
+
                         $array = explode("\t", $datas);
-                
-                        // Check if $array has enough elements
+
+                        // Check if $array has enough elements (at least 7 elements)
                         if (count($array) >= 7) {
                             $string = $array[3];
                             $parenthesisPosition = strpos($string, ')');
@@ -307,6 +271,10 @@ class DashboardController extends Controller
                         } else {
                             // Log the error
                             Log::error('Error: Insufficient data elements in $array on companyId ' . $companyId);
+                            // You can also include additional information in the log message if needed
+
+                            // Or you can throw an exception
+                            // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
                         }
                     } catch (Exception $e) {
                         // Log or handle the exception
@@ -315,11 +283,10 @@ class DashboardController extends Controller
                         return response()->json(['error' => 'Failed to retrieve data'], 500);
                     }
                 }
-                
-                Log::debug(json_decode(json_encode($result_array), true));
-                
-                return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
 
+                Log::debug(json_decode(json_encode($result_array), true));
+
+                return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
 
                 break;
             case 'roche':
