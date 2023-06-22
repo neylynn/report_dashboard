@@ -216,77 +216,142 @@ class DashboardController extends Controller
 
                 //new code
 
+                $host = env('DB_PORTAL_TWO_HOST');
+                $database = env('DB_PORTAL_TWO_DATABASE');
+                $username = env('DB_PORTAL_TWO_USERNAME');
+                $password = env('DB_PORTAL_TWO_PASSWORD');
+                
                 $start_date = $request->input('start_date');
                 $end_date = $request->input('end_date');
                 $company_array = [];
-
-                // Retrieve company IDs using company_list procedure
+                
                 try {
-                    $host = env('DB_PORTAL_TWO_HOST');
-                    $database = env('DB_PORTAL_TWO_DATABASE');
-                    $username = env('DB_PORTAL_TWO_USERNAME');
-                    $password = env('DB_PORTAL_TWO_PASSWORD');
-
                     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
-
-                    // Execute the company_list procedure
+                
+                    // Retrieve company IDs using the company_id procedure
                     $stmt = $pdo->prepare('CALL company_id()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+                
                     foreach ($result as $row) {
                         $company_id = $row['id'];
                         array_push($company_array, $company_id);
                     }
                 } catch (PDOException $e) {
-                    // Log or handle the database connection error
                     Log::error('Database Connection Error: ' . $e->getMessage());
-                    // Return an error response to the user
                     return response()->json(['error' => 'Failed to connect to the database'], 500);
                 }
-
+                
                 $result_array = [];
+                
                 foreach ($company_array as $companyId) {
                     try {
-                        $get_data = 'MYSQL_PWD="Jaoyai|p3ue{zeek" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
-                        $datas = exec($get_data);
-                        Log::debug('Received data: ' . $datas); // Log the received data
-
-                        $array = explode("\t", $datas);
-
-                        // Check if $array has enough elements (at least 7 elements)
-                        if (count($array) >= 7) {
-                            $string = $array[3];
-                            $parenthesisPosition = strpos($string, ')');
-                            $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                        $stmt = $pdo->prepare('CALL viber_report(?, ?, ?)');
+                        $stmt->bindParam(1, $start_date, PDO::PARAM_STR);
+                        $stmt->bindParam(2, $end_date, PDO::PARAM_STR);
+                        $stmt->bindParam(3, $companyId, PDO::PARAM_INT);
+                        $stmt->execute();
+                        $arrayOfObjects = $stmt->fetchAll(PDO::FETCH_OBJ);
+                
+                        foreach ($arrayOfObjects as $object) {
+                            $company_name = $object->name;
+                            $delivered = $object->Delivered;
+                            $seen = $object->Seen;
+                            $error = $object->Error;
                             $data = [
-                                [
-                                    $trimmedString,
-                                    $array[4],
-                                    $array[5],
-                                    $array[6]
-                                ]
+                                $company_name,
+                                $delivered,
+                                $seen,
+                                $error
                             ];
                             array_push($result_array, $data);
-                        } else {
-                            // Log the error
-                            Log::error('Error: Insufficient data elements in $array on companyId ' . $companyId);
-                            // You can also include additional information in the log message if needed
-
-                            // Or you can throw an exception
-                            // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
                         }
-                    } catch (Exception $e) {
-                        // Log or handle the exception
-                        Log::error('Exception: ' . $e->getMessage());
-                        // Return an error response to the user
-                        return response()->json(['error' => 'Failed to retrieve data'], 500);
+                    } catch (PDOException $e) {
+                        Log::error('Database Connection Error: ' . $e->getMessage());
+                        return response()->json(['error' => 'Failed to connect to the database'], 500);
                     }
                 }
-
+                
                 Log::debug(json_decode(json_encode($result_array), true));
-
+                
                 return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
+                
+
+
+
+
+
+                // $start_date = $request->input('start_date');
+                // $end_date = $request->input('end_date');
+                // $company_array = [];
+
+                // // Retrieve company IDs using company_list procedure
+                // try {
+                //     $host = env('DB_PORTAL_TWO_HOST');
+                //     $database = env('DB_PORTAL_TWO_DATABASE');
+                //     $username = env('DB_PORTAL_TWO_USERNAME');
+                //     $password = env('DB_PORTAL_TWO_PASSWORD');
+
+                //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
+
+                //     // Execute the company_list procedure
+                //     $stmt = $pdo->prepare('CALL company_id()');
+                //     $stmt->execute();
+                //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                //     foreach ($result as $row) {
+                //         $company_id = $row['id'];
+                //         array_push($company_array, $company_id);
+                //     }
+                // } catch (PDOException $e) {
+                //     // Log or handle the database connection error
+                //     Log::error('Database Connection Error: ' . $e->getMessage());
+                //     // Return an error response to the user
+                //     return response()->json(['error' => 'Failed to connect to the database'], 500);
+                // }
+
+                // $result_array = [];
+                // foreach ($company_array as $companyId) {
+                //     try {
+                //         $get_data = 'MYSQL_PWD="Jaoyai|p3ue{zeek" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
+                //         $datas = exec($get_data);
+                //         Log::debug('Received data: ' . $datas); // Log the received data
+
+                //         $array = explode("\t", $datas);
+
+                //         // Check if $array has enough elements (at least 7 elements)
+                //         if (count($array) >= 7) {
+                //             $string = $array[3];
+                //             $parenthesisPosition = strpos($string, ')');
+                //             $trimmedString = trim(substr($string, $parenthesisPosition + 1));
+                //             $data = [
+                //                 [
+                //                     $trimmedString,
+                //                     $array[4],
+                //                     $array[5],
+                //                     $array[6]
+                //                 ]
+                //             ];
+                //             array_push($result_array, $data);
+                //         } else {
+                //             // Log the error
+                //             Log::error('Error: Insufficient data elements in $array on companyId ' . $companyId);
+                //             // You can also include additional information in the log message if needed
+
+                //             // Or you can throw an exception
+                //             // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
+                //         }
+                //     } catch (Exception $e) {
+                //         // Log or handle the exception
+                //         Log::error('Exception: ' . $e->getMessage());
+                //         // Return an error response to the user
+                //         return response()->json(['error' => 'Failed to retrieve data'], 500);
+                //     }
+                // }
+
+                // Log::debug(json_decode(json_encode($result_array), true));
+
+                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
 
                 break;
             case 'roche':
