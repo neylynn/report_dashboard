@@ -246,7 +246,7 @@ class DashboardController extends Controller
                 
                 foreach ($company_array as $companyId) {
                     try {
-                        $stmt = $pdo->prepare('CALL viber_report(?, ?, ?)');
+                        $stmt = $pdo->prepare('CALL viber_report_new(?, ?, ?)');
                         $stmt->bindParam(1, $start_date, PDO::PARAM_STR);
                         $stmt->bindParam(2, $end_date, PDO::PARAM_STR);
                         $stmt->bindParam(3, $companyId, PDO::PARAM_INT);
