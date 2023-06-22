@@ -233,6 +233,7 @@ class DashboardController extends Controller
                     $stmt = $pdo->prepare('CALL company_list()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    dd($result);
 
                     foreach ($result as $row) {
                         $company_id = $row['id_list'];
