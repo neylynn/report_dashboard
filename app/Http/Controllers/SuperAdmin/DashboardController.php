@@ -235,7 +235,7 @@ class DashboardController extends Controller
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     foreach ($result as $row) {
-                        $company_id = $row['id_list'];
+                        $company_id = $row['id'];
                         array_push($company_array, $company_id);
                     }
                 } catch (PDOException $e) {
