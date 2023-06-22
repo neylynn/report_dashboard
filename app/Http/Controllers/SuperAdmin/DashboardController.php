@@ -245,6 +245,7 @@ class DashboardController extends Controller
                     // Return an error response to the user
                     return response()->json(['error' => 'Failed to connect to the database'], 500);
                 }
+                dd($company_array);
 
                 $result_array = [];
                 // foreach ($company_array as $companyId) {
