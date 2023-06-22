@@ -245,7 +245,7 @@ class DashboardController extends Controller
                     // Return an error response to the user
                     return response()->json(['error' => 'Failed to connect to the database'], 500);
                 }
-                dd($company_array);
+                // dd($company_array);
 
                 $result_array = [];
                 // foreach ($company_array as $companyId) {
@@ -307,10 +307,6 @@ class DashboardController extends Controller
                         } else {
                             // Log the error
                             Log::error('Error: Insufficient data elements in $array on companyId ' . $companyId);
-                            // You can also include additional information in the log message if needed
-                
-                            // Or you can throw an exception
-                            // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
                         }
                     } catch (Exception $e) {
                         // Log or handle the exception
