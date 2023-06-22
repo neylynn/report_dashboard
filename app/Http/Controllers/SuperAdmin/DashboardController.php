@@ -33,7 +33,6 @@ class DashboardController extends Controller
         Log::debug("Test");
         switch ($request->input('viber_portal')) {
             case 'portal_one':
-
                 // old code //
                 // $start_date = $request->input('start_date');
                 // $end_date = $request->input('end_date');
@@ -141,8 +140,6 @@ class DashboardController extends Controller
                 Log::debug(json_decode(json_encode($result_array), true));
 
                 return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_one_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
-
-
 
                 break;
             case 'portal_two':
@@ -275,83 +272,6 @@ class DashboardController extends Controller
                 Log::debug(json_decode(json_encode($result_array), true));
                 
                 return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
-                
-
-
-
-
-
-                // $start_date = $request->input('start_date');
-                // $end_date = $request->input('end_date');
-                // $company_array = [];
-
-                // // Retrieve company IDs using company_list procedure
-                // try {
-                //     $host = env('DB_PORTAL_TWO_HOST');
-                //     $database = env('DB_PORTAL_TWO_DATABASE');
-                //     $username = env('DB_PORTAL_TWO_USERNAME');
-                //     $password = env('DB_PORTAL_TWO_PASSWORD');
-
-                //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
-
-                //     // Execute the company_list procedure
-                //     $stmt = $pdo->prepare('CALL company_id()');
-                //     $stmt->execute();
-                //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                //     foreach ($result as $row) {
-                //         $company_id = $row['id'];
-                //         array_push($company_array, $company_id);
-                //     }
-                // } catch (PDOException $e) {
-                //     // Log or handle the database connection error
-                //     Log::error('Database Connection Error: ' . $e->getMessage());
-                //     // Return an error response to the user
-                //     return response()->json(['error' => 'Failed to connect to the database'], 500);
-                // }
-
-                // $result_array = [];
-                // foreach ($company_array as $companyId) {
-                //     try {
-                //         $get_data = 'MYSQL_PWD="Jaoyai|p3ue{zeek" mysql -u ' . $username . ' -e "USE ' . $database . '; CALL viber_report(\'' . $start_date . '\', \'' . $end_date . '\',\'' . $companyId . '\')"';
-                //         $datas = exec($get_data);
-                //         Log::debug('Received data: ' . $datas); // Log the received data
-
-                //         $array = explode("\t", $datas);
-
-                //         // Check if $array has enough elements (at least 7 elements)
-                //         if (count($array) >= 7) {
-                //             $string = $array[3];
-                //             $parenthesisPosition = strpos($string, ')');
-                //             $trimmedString = trim(substr($string, $parenthesisPosition + 1));
-                //             $data = [
-                //                 [
-                //                     $trimmedString,
-                //                     $array[4],
-                //                     $array[5],
-                //                     $array[6]
-                //                 ]
-                //             ];
-                //             array_push($result_array, $data);
-                //         } else {
-                //             // Log the error
-                //             Log::error('Error: Insufficient data elements in $array on companyId ' . $companyId);
-                //             // You can also include additional information in the log message if needed
-
-                //             // Or you can throw an exception
-                //             // throw new Exception('Error: Insufficient data elements in $array on companyId ' . $companyId);
-                //         }
-                //     } catch (Exception $e) {
-                //         // Log or handle the exception
-                //         Log::error('Exception: ' . $e->getMessage());
-                //         // Return an error response to the user
-                //         return response()->json(['error' => 'Failed to retrieve data'], 500);
-                //     }
-                // }
-
-                // Log::debug(json_decode(json_encode($result_array), true));
-
-                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
 
                 break;
             case 'roche':
@@ -534,30 +454,6 @@ class DashboardController extends Controller
 
     public function testConnection()
     {
-        // $host = env('DB_PORTAL_TWO_HOST');
-        // $database = env('DB_PORTAL_TWO_DATABASE');
-        // $username = env('DB_PORTAL_TWO_USERNAME');
-        // $password = env('DB_PORTAL_TWO_PASSWORD');
-
-        // try {
-        //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
-
-        //     // Execute the company_list procedure
-        //     $stmt = $pdo->prepare('CALL company_list()');
-        //     $stmt->execute();
-        //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        //     dd($result);
-
-        //     if (count($result) > 0) {
-        //         return 'Company list retrieved successfully!';
-        //     } else {
-        //         return 'No companies found.';
-        //     }
-        // } catch (PDOException $e) {
-        //     return 'Failed to connect to the database: ' . $e->getMessage();
-        // }
-
-
         try {
             $host = env('DB_PORTAL_TWO_HOST');
             $database = env('DB_PORTAL_TWO_DATABASE');
