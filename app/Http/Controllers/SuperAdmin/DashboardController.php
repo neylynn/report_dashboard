@@ -216,6 +216,71 @@ class DashboardController extends Controller
 
                 //new code
 
+                // $start_date = $request->input('start_date');
+                // $end_date = $request->input('end_date');
+                // $company_array = [];
+
+                // // Retrieve company IDs using company_list procedure
+                // try {
+                //     $host = env('DB_PORTAL_TWO_HOST');
+                //     $database = env('DB_PORTAL_TWO_DATABASE');
+                //     $username = env('DB_PORTAL_TWO_USERNAME');
+                //     $password = env('DB_PORTAL_TWO_PASSWORD');
+
+                //     $pdo = new PDO("mysql:host=$host;dbname=$database;charset=utf8mb4", $username, $password);
+
+                //     // Execute the company_list procedure
+                //     $stmt = $pdo->prepare('CALL company_list()');
+                //     $stmt->execute();
+                //     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                //     // dd($result);
+
+                //     foreach ($result as $row) {
+                //         $company_id = $row['id_list'];
+                //         array_push($company_array, $company_id);
+                //     }
+                // } catch (PDOException $e) {
+                //     // Log or handle the database connection error
+                //     Log::error('Database Connection Error: ' . $e->getMessage());
+                //     // Return an error response to the user
+                //     return response()->json(['error' => 'Failed to connect to the database'], 500);
+                // }
+
+                // $result_array = [];
+                // foreach ($company_array as $companyId) {
+                //     try {
+                //         $stmt = $pdo->prepare('CALL viber_report(?, ?, ?)');
+                //         $stmt->bindParam(1, $start_date, PDO::PARAM_STR);
+                //         $stmt->bindParam(2, $end_date, PDO::PARAM_STR);
+                //         $stmt->bindParam(3, $companyId, PDO::PARAM_INT);
+                //         $stmt->execute();
+                //         $arrayOfObjects = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+                //         foreach ($arrayOfObjects as $object) {
+                //             $company_name = $object->name;
+                //             $delivered = $object->Delivered;
+                //             $seen = $object->Seen;
+                //             $error = $object->Error;
+                //             $data = [
+                //                 $company_name,
+                //                 $delivered,
+                //                 $seen,
+                //                 $error
+                //             ];
+                //             array_push($result_array, $data);
+                //         }
+                //     } catch (PDOException $e) {
+                //         // Log or handle the database connection error
+                //         Log::error('Database Connection Error: ' . $e->getMessage());
+                //         // Return an error response to the user
+                //         return response()->json(['error' => 'Failed to connect to the database'], 500);
+                //     }
+                // }
+
+                // Log::debug(json_decode(json_encode($result_array), true));
+
+                // return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
+
                 $start_date = $request->input('start_date');
                 $end_date = $request->input('end_date');
                 $company_array = [];
@@ -233,7 +298,6 @@ class DashboardController extends Controller
                     $stmt = $pdo->prepare('CALL company_list()');
                     $stmt->execute();
                     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    dd($result);
 
                     foreach ($result as $row) {
                         $company_id = $row['id_list'];
@@ -258,9 +322,12 @@ class DashboardController extends Controller
 
                         foreach ($arrayOfObjects as $object) {
                             $company_name = $object->name;
-                            $delivered = $object->Delivered;
-                            $seen = $object->Seen;
-                            $error = $object->Error;
+
+                            // Check if the object has the "Delivered" property
+                            $delivered = isset($object->Delivered) ? $object->Delivered : null;
+                            $seen = isset($object->Seen) ? $object->Seen : null;
+                            $error = isset($object->Error) ? $object->Error : null;
+
                             $data = [
                                 $company_name,
                                 $delivered,
@@ -280,6 +347,7 @@ class DashboardController extends Controller
                 Log::debug(json_decode(json_encode($result_array), true));
 
                 return Excel::download(new \App\Exports\ProcedureDataExport(json_decode(json_encode($result_array), true)), 'portal_two_viber_report(' . $start_date . '_' . $end_date . ').xlsx');
+
 
 
                 break;
